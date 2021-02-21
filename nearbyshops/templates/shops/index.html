@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Nearby Shops</title>
+        <!-- Leaflet CSS -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+           integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+           crossorigin=""/>
+
+        <!-- Leaflet JS -->
+         <!-- Make sure you put this AFTER Leaflet's CSS -->
+         <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+           integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+           crossorigin=""></script>
+
+        <!-- Set map height -->
+        <style>
+            #mapid { height: 700px; width: 1500px }
+        </style>
+    </head>
+    <body>
+
+        <h1>Nearby Shops</h1>
+        {% if shops %}
+        <ul>
+        {% for shop in shops %}
+            <li>
+            {{ shop.name }}: {{shop.distance}}
+            </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+
+        <!-- map div -->
+        <div id="mapid"></div>
+        <!-- map js  -->
+        <script>
+            var map = L.map('mapid').setView([-22.891874325402682, -43.12453686231004], 17);
+            {#var mymap = L.map('mapid').setView([51.505, -0.09], 13);#}
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            L.marker([-22.891874325402682, -43.12453686231004]).addTo(map)
+                .bindPopup('I am in Niterói.<br> Looking for shops.')
+                .openPopup();
+
+            {% for shop in shops %}
+            var circle = L.circle([{{ shop.location.y }}, {{ shop.location.x }}], {
+                color: 'red',
+                fillColor: '#f03',
+                fillOpacity: 0.5,
+                radius: 5
+            }).addTo(map);
+            {% endfor %}
+
+        </script>
+    </body>
+</html>
